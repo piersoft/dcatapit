@@ -40,33 +40,12 @@ def theme_aggr_to_theme_uris(aggregated_themes: list) -> list:
     return [theme_name_to_uri(agg.get('theme')) for agg in aggregated_themes]
 
 
-#def theme_name_to_uri(theme_name: str) -> str:
- #   if theme_name.startswith('http'):
-  #      log.warning(f'Theme name "{theme_name}" is already a URI')
-   #     return theme_name
-   # return THEME_BASE_URI + theme_name.upper()
-
 def theme_name_to_uri(theme_name: str) -> str:
-    theme_value='OPDAT_PRO'
-    if isinstance(theme_name, str):
-#      log.warning('Tema è una stringa: %s',theme_name)
-      theme_value=theme_name
-      if theme_value.startswith('http'):
- #      log.warning(f'Theme name "{theme_value}" is already a URI')
-       return theme_value
-      #theme_value=theme_name
-      return THEME_BASE_URI + theme_value.upper()
-    else:
-      #theme_name.pop('subthemes')
-      subt=str(theme_name['subthemes'])
-      theme_value=str(theme_name['theme'])
-#      theme_value=theme_value.replace('http://publications.europa.eu/resource/authority/data-theme/','')
-  #    log.warning('Tema è DICT: %s',theme_value)
-      #return THEME_BASE_URI + theme_value.upper()
-      if theme_value.startswith('http'):
-       log.warning(f'Theme name DICT "{theme_value}" is already a URI')
-       return theme_value
-      return THEME_BASE_URI + theme_value.upper()
+    if theme_name.startswith('http'):
+        log.warning(f'Theme name "{theme_name}" is already a URI')
+        return theme_name
+    return THEME_BASE_URI + theme_name.upper()
+
 
 def theme_names_to_uris(names: list) -> list:
     return [theme_name_to_uri(name) for name in names]
