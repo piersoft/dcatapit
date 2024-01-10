@@ -135,12 +135,12 @@ def do_load(g, vocab_name: str):
         except KeyError:
             log.error(f'Unknown action {action}')
 
-    if vocab_name == LANGUAGE_THEME_NAME:
-        for offered_language in config.get('ckan.locales_offered', 'it').split(' '):
-            if offered_language not in LANGUAGE_IMPORT_FILTER:
-                log.info(
-                    f"'{offered_language}' language is fitlered out in this plugin "
-                    f"and will be skipped during the import stage (vocabulary '{vocab_name}')")
+    #if vocab_name == LANGUAGE_THEME_NAME:
+     #   for offered_language in config.get('ckan.locales_offered', 'it').split(' '):
+      #      if offered_language not in LANGUAGE_IMPORT_FILTER:
+       #         log.info(
+        #            f"'{offered_language}' language is fitlered out in this plugin "
+         #           f"and will be skipped during the import stage (vocabulary '{vocab_name}')")
 
     # Loading the RDF vocabulary
     log.debug(f'Loading graph for {vocab_name}')
