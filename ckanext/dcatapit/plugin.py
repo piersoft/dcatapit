@@ -92,7 +92,7 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
                        ver='/2') as m:
             m.connect('/util/vocabulary/autocomplete', action='vocabulary_autocomplete',
                       conditions=GET)
-        log.warning('Before_map %s ', map)
+        #log.warning('Before_map %s ', map)
         return map
 
     # ------------- IConfigurer ---------------#
@@ -340,7 +340,7 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
          theme_normal=extra_theme
 #        aggr_themes = helpers.dcatapit_string_to_aggregated_themes(extra_theme)
         aggr_themes = helpers.dcatapit_string_to_aggregated_themes(theme_normal)
-        log.warning('extra_theme len  %s',len(extra_theme))
+        #log.warning('extra_theme len  %s',len(extra_theme))
 #        aggr_theme1=str(aggr_themes).replace('http://publications.europa.eu/resource/authority/data-theme/','')
         search_terms=[]
         search_terms1=[]
@@ -349,14 +349,14 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
          search_terms = [t['theme'] for t in aggr_themes]
   #       search_terms=list(theme_normal)
         else:
-         log.warning('Ufffa')
-         log.warning('Dict_dataset aggr_themes plugin  %s',aggr_themes)
-         log.warning('Dict_dataset search_terms plugin  %s',search_terms)
-         log.warning('Dict_dataset theme_normale plugin  %s',theme_normal)
-         log.warning('Dict_dataset extra_theme plugin  %s',extra_theme)
+         #log.warning('Ufffa')
+         #log.warning('Dict_dataset aggr_themes plugin  %s',aggr_themes)
+         #log.warning('Dict_dataset search_terms plugin  %s',search_terms)
+         #log.warning('Dict_dataset theme_normale plugin  %s',theme_normal)
+         #log.warning('Dict_dataset extra_theme plugin  %s',extra_theme)
          try: 
           for t in aggr_themes:
-            log.warning('sto cazzo di aggr_themes in json %s',t.get('theme'))
+            #log.warning('sto cazzo di aggr_themes in json %s',t.get('theme'))
             search_terms=t.get('theme')
          except:
            stringtheme=''
@@ -364,20 +364,20 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
 #          for i in range(0, len(aggr_themes), 1):
  #         res_dict[aggr_themes[0]] = aggr_themes[0]
   #        for t in res_dict:
-#           log.warning('sto cazzo di aggr_themes LISTA in json %s',t.get('theme'))
+#           #log.warning('sto cazzo di aggr_themes LISTA in json %s',t.get('theme'))
            for t in aggr_themes:
                stringtheme+=''+t
-           log.warning('sto cazzo di aggr_themes STRINGA in json %s',stringtheme)
+           #log.warning('sto cazzo di aggr_themes STRINGA in json %s',stringtheme)
            search_terms.insert(0,stringtheme)
          finally:
-          log.warning('forse è andata bene')
+          #log.warning('forse è andata bene')
 
         if search_terms:
             dataset_dict['dcat_theme'] = search_terms
-        log.warning('Dict_dataset aggr_themes plugin  %s',aggr_themes)
-        log.warning('Dict_dataset search_terms plugin  %s',search_terms)
-        log.warning('Dict_dataset theme_normale plugin  %s',theme_normal)
-        log.warning('Dict_dataset extra_theme plugin  %s',extra_theme)
+        #log.warning('Dict_dataset aggr_themes plugin  %s',aggr_themes)
+        #log.warning('Dict_dataset search_terms plugin  %s',search_terms)
+        #log.warning('Dict_dataset theme_normale plugin  %s',theme_normal)
+        #log.warning('Dict_dataset extra_theme plugin  %s',extra_theme)
         search_subthemes = []
         try:
 #        if len(extra_theme)>4:
@@ -390,7 +390,7 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
             for lang, subthemes in localized_subthemes.items():
                 dataset_dict['dcat_subtheme_{}'.format(lang)] = subthemes
         ddict = json.loads(dataset_dict['data_dict'])
-        #log.warning('Dict_dataset aggr_themes plugin  %s',aggr_themes)
+        ##log.warning('Dict_dataset aggr_themes plugin  %s',aggr_themes)
         resources = ddict.get('resources') or []
         _licenses = list(set([r.get('license_type') for r in resources if r.get('license_type')]))
 
@@ -403,9 +403,9 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
                     if lname:
                         dataset_dict['resource_license_{}'.format(lang)] = lname
             else:
-                log.warning('Bad license: license not found: %r ', l)
+                #log.warning('Bad license: license not found: %r ', l)
         dataset_dict['resource_license'] = _licenses
-        #log.warning('licenza ricercata %s ', _licenses)
+        ##log.warning('licenza ricercata %s ', _licenses)
         org_id = dataset_dict['owner_org']
         organization_show = plugins.toolkit.get_action('organization_show')
         if org_id:
@@ -502,7 +502,7 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
                 name = item['name']
                 label = interfaces.get_localized_tag_name(tag_name=name, lang=lang)
                 item['display_name'] = label
-                #log.warning('search facets in plugin %s',themes)
+                ##log.warning('search facets in plugin %s',themes)
         return search_results
 
     def manage_extras_for_search(self, field, _dict, _dict_extras):
@@ -536,7 +536,7 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
                     try:
                         tmp_value = tmp_value.strftime(fdef.get('format') or '%d-%m-%Y')
                     except ValueError as err:
-                        log.warning('dataset %s, field %s: cannot reformat date for %s (from input %s): %s',
+                        #log.warning('dataset %s, field %s: cannot reformat date for %s (from input %s): %s',
                                     pkg_dict['name'], fname, tmp_value, df_value, err, exc_info=err)
                         tmp_value = df_value
                 pkg_dict[fname] = tmp_value
@@ -583,7 +583,7 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
         for k in pkg_update.keys():
             if k in pkg_dict:
                 if pkg_update[k] == pkg_dict[k]:
-                    log.warning(f'Ignoring duplicated key {k} with same value {pkg_update[k]}')
+                    #log.warning(f'Ignoring duplicated key {k} with same value {pkg_update[k]}')
                 else:
                     raise KeyError(f'Duplicated key in pkg_dict: {k}: {pkg_update[k]} in extras'
                                    f' vs {pkg_dict[k]} in pkg')
@@ -646,7 +646,7 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
          #  'dcat_theme': toolkit._('Dataset Themes'),
          #  'dcat_subtheme': toolkit._('Subthemes'),
         #})
-        #log.warning(facets_dict)
+        ##log.warning(facets_dict)
         return facets_dict
 
 
