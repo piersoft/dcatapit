@@ -466,10 +466,10 @@ class ItalianDCATAPProfile(RDFProfile):
             _added = False
             if start:
                 _added = True
-                self._add_date_triple(temporal_extent, SCHEMA.startDate, start)
+                self._add_date_triple(temporal_extent, DCATAPIT.startDate, start)
             if end:
                 _added = True
-                self._add_date_triple(temporal_extent, SCHEMA.endDate, end)
+                self._add_date_triple(temporal_extent, DCATAPIT.endDate, end)
             if _added:
                 g.add((dataset_ref, DCT.temporal, temporal_extent))
 
@@ -479,8 +479,8 @@ class ItalianDCATAPProfile(RDFProfile):
 
         for interval in self.g.objects(dataset_ref, pred):
             # Fist try the schema.org way
-            start = self._object_value(interval, SCHEMA.startDate)
-            end = self._object_value(interval, SCHEMA.endDate)
+            start = self._object_value(interval, DCATAPIT.startDate)
+            end = self._object_value(interval, DCATAPIT.endDate)
             if start or end:
                 out.append({'temporal_start': start,
                             'temporal_end': end})
