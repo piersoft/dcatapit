@@ -36,7 +36,7 @@ from ckanext.dcatapit.schema import FIELD_THEMES_AGGREGATE
 DEFAULT_LANG = config.get('ckan.locale_default', 'it')
 HANDLED_LANGS = set(['it', 'fr', 'de', 'en'])
 OFFERED_LANGS = set(get_locales()).intersection(HANDLED_LANGS)
-
+DEFAULT_LICENSECCBY = "https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40"
 log = logging.getLogger(__name__)
 
 
@@ -164,7 +164,9 @@ class ItalianDCATAPProfile(RDFProfile):
             if len(valueList) > 1:
                 value = '{' + value + '}'
             dataset_dict[key] = value
-
+        if dataset_dict.get('holder_identifier'):
+         if 'r_marche' in dataset_dict.get('holder_identifier'):
+             dataset_dict['frequency']='UNKNOW'
         self._parse_themes(dataset_dict, dataset_ref)
 
         # Spatial
@@ -285,10 +287,13 @@ class ItalianDCATAPProfile(RDFProfile):
                                 resource_dict.get('name', '---'))
 
             # License
-            license = self._object(distribution, DCT.license)
-            if license:
-
+            license1 = self._object(distribution, DCT.license)
+            log.info('license1: %s',license1)
+            if license1:
+                license=str(license1)
+                license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
                 license_uri = str(license)
+                license_uri=license_uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
                 license_dct = self._object_value(license, DCT.type)
                 license_names = self.g.objects(license, FOAF.name)  # may be either the title or the id
                 license_version = self._object_value(license, FOAF.versionInfo)
@@ -312,7 +317,20 @@ class ItalianDCATAPProfile(RDFProfile):
                         license_type.version
                     )
 
+                setlic = 0
                 resource_dict['license_type'] = license_type.uri
+                if 'ispra_rm' in dataset_dict.get('holder_identifier'):
+                          resource_dict['license_type']='';
+                          license_type.uri='https://creativecommons.org/licenses/by/4.0/'
+                          resource_dict['license_type']=license_type.uri
+                          log.info("Imposto la licenza per ispra CCBY %s",resource_dict['license_type'])
+                    #      dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
+                          setlic = 1
+              # if 'r_marche' in dataset_dict.get('holder_identifier'):
+               #           dataset_dict['themes_aggregate'] =  "[{\"theme\": \"OP_DATPRO\", \"subthemes\": []}]"
+                #          log.info("Imposto frequenza sconosciuta e tema GOVE per r_marche)
+                 #         dataset_dict['frequency'] =  "http://publications.europa.eu/resource/authority/frequency/CONT"
+                  #        setlic = 1
                 try:
                     license_name = names['it']
                 except KeyError:
@@ -322,7 +340,7 @@ class ItalianDCATAPProfile(RDFProfile):
                         license_name = names.values()[0] if names else license_type.default_name
 
                 log.info('Setting lincense %s %s %s', license_type.uri, license_name, license_type.document_uri)
-
+ #                licenses.append((license_type.document_uri, license_name,license_type.document_uri))
                 licenses.append((license_type.uri, license_name, license_type.document_uri))
             else:
                 log.warning('No license found for resource "%s"::"%s"',
@@ -352,8 +370,10 @@ class ItalianDCATAPProfile(RDFProfile):
         for lic_uri, id, doc_uri in licenses:
             license_ids.add(id)
 
-        if len(license_ids) == 1:
-            dataset_dict['license_id'] = license_ids.pop()
+        if len(license_ids) >= 1:
+            log.info('license_ids ha lunghezza >=1')
+            if setlic == 0:
+             dataset_dict['license_id'] = license_ids.pop()
             # TODO Map to internally defined licenses
         else:
             log.warning(
@@ -361,7 +381,7 @@ class ItalianDCATAPProfile(RDFProfile):
                 len(license_ids),
                 dataset_dict.get('title', '---')
             )
-            dataset_dict['license_id'] = 'notspecified'
+            #dataset_dict['license_id'] = 'notspecified'
 
         return dataset_dict
 
@@ -593,6 +613,12 @@ class ItalianDCATAPProfile(RDFProfile):
         g.add((dataset_ref, RDF.type, DCATAPIT.Dataset))
 
         # replace themes
+        for resource_dict in dataset_dict.get('resources', []):
+         if 'goodpa.regione.marche' in resource_dict['url']:
+                          dataset_dict['themes_aggregate'] =  "[{\"theme\": \"GOVE\", \"subthemes\": []}]"
+                          log.info("Imposto frequenza sconosciuta e tema GOVE per r_marche")
+                          #dataset_dict['frequency'] =  "http://publications.europa.eu/resource/authority/frequency/UNKNOW"
+                        
         self._add_themes(dataset_ref,
                          self._get_dict_value(dataset_dict, FIELD_THEMES_AGGREGATE),
                          self._get_dict_value(dataset_dict, 'theme'))
@@ -603,6 +629,8 @@ class ItalianDCATAPProfile(RDFProfile):
             for lang in value.split(','):
                 self.g.remove((dataset_ref, DCT.language, Literal(lang)))
                 lang = lang.replace('{', '').replace('}', '')
+                lang = lang.replace('"', '').replace('"', '')
+                lang = lang.replace('[', '').replace(']', '')
                 self.g.add((dataset_ref, DCT.language, URIRef(LANG_BASE_URI + lang)))
                 # self._add_concept(LANG_CONCEPTS, lang)
 
@@ -653,6 +681,11 @@ class ItalianDCATAPProfile(RDFProfile):
         else:
             landing_page_uri = dataset_uri(dataset_dict)  # TODO: preserve original URI if harvested
 
+        if 'r_marche' in dataset_dict.get('holder_identifier'):
+            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","goodpa.regione.marche.it")
+        if 'r_emiro' in dataset_dict.get('holder_identifier'):
+            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.emilia-romagna.it")
+
         self.g.add((dataset_ref, DCAT.landingPage, URIRef(landing_page_uri)))
 
         # conformsTo
@@ -691,6 +724,10 @@ class ItalianDCATAPProfile(RDFProfile):
         # alternate_identifier sometimes resides in extras
 
         try:
+            dataset_dict['alternate_identifier']=dataset_dict['alternate_identifier'].replace('[','').replace(']','')
+            dataset_dict['alternate_identifier']=dataset_dict['alternate_identifier'].replace('["','').replace('"]','')
+            dataset_dict['alternate_identifier']=dataset_dict['alternate_identifier'].replace('"','').replace('"','')
+            dataset_dict['alternate_identifier']=dataset_dict['alternate_identifier'].replace('\"','').replace('\"','')
             alt_ids = json.loads(dataset_dict['alternate_identifier'])
         except (KeyError, TypeError, ValueError):
             alt_ids = []
@@ -844,7 +881,14 @@ class ItalianDCATAPProfile(RDFProfile):
         for resource_dict in dataset_dict.get('resources', []):
 
             distribution = URIRef(resource_uri(resource_dict))  # TODO: preserve original info if harvested
-
+            if 'r_marche' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace("www.piersoftckan.biz","goodpa.regione.marche.it")
+              distribution=URIRef(distribution)
+              log.info('resource_distribution_it %s',distribution)
+            if 'r_emiro' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace("www.piersoftckan.biz","dati.emilia-romagna.it")
+              distribution=URIRef(distribution)
+              log.info('resource_distribution_it %s',distribution)
             # Add the DCATAPIT type
             g.add((distribution, RDF.type, DCATAPIT.Distribution))
 
