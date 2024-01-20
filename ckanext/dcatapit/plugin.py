@@ -1,26 +1,3 @@
-#import datetime
-#import json
-#import logging
-#import routes
-#import ckan.plugins as plugins
-#import ckan.plugins.toolkit as toolkit
-#from ckan import lib, logic
-#from ckan.common import config
-#from routes.mapper import SubMapper
-#from flask import Blueprint
-#import ckanext.dcatapit.helpers as helpers
-#import ckanext.dcatapit.interfaces as interfaces
-#import ckanext.dcatapit.schema as dcatapit_schema
-#import ckanext.dcatapit.validators as validators
-#from ckanext.dcatapit.commands import dcatapit as dcatapit_cli
-#from ckanext.dcatapit.controllers.harvest import HarvesterController
-#from ckanext.dcatapit.helpers import get_org_context
-#from ckanext.dcatapit.mapping import populate_theme_groups, theme_name_to_uri
-#from ckanext.dcatapit.mapping import populate_theme_groups
-#from ckanext.dcatapit.controllers.thesaurus import ThesaurusController, get_thesaurus_admin_page, update_vocab_admin
-#from ckanext.dcatapit.model.license import License
-#from ckanext.dcatapit.schema import FIELD_THEMES_AGGREGATE
-
 import datetime
 import json
 import logging
@@ -332,7 +309,12 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
 
         extra_theme1 = dataset_dict.get(f'extras_{FIELD_THEMES_AGGREGATE}', None) or ''
        # theme_normal = dataset_dict.get(tuple['theme'])
-        theme_normal1 = str(json.loads(dataset_dict['theme']))
+        if json.loads(dataset_dict['theme']):
+         log.warning('json.loads del tema %s',str(json.loads(dataset_dict['theme'])))
+         theme_normal1 = str(json.loads(dataset_dict['theme']))
+        else:
+         dataset_dict['theme'] = 'OP_DATPRO'
+         theme_normal1 = dataset_dict['theme']
         theme_normal=theme_normal1.replace("'", '"')
         extra_theme=extra_theme1.replace("'", '"')
         #aggr_themes=theme_normal
@@ -363,6 +345,8 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
           log.warning('ok')
 
         if search_terms:
+#            search_terms=search_terms.replace('http%3A%2F%2Fpublications.europa.eu%2Fresource%2Fauthority%2Fdata-theme%2F','')
+ #           search_terms=search_terms.replace('http://publications.europa.eu/resource/authority/data-theme/','')
             dataset_dict['dcat_theme'] = search_terms
             
         search_subthemes = []
