@@ -15,6 +15,7 @@ log = logging.getLogger(__name__)
 
 DCATAPIT_THEMES_MAP = 'ckanext.dcatapit.nonconformant_themes_mapping.file'
 DCATAPIT_THEMES_MAP_SECTION = 'terms_theme_mapping'
+import six
 
 subt=''
 
@@ -41,10 +42,11 @@ def theme_aggr_to_theme_uris(aggregated_themes: list) -> list:
 
 
 def theme_name_to_uri(theme_name: str) -> str:
-    if theme_name.startswith('http'):
+    if isinstance(theme_name, six.string_types):
+     if theme_name.startswith('http'):
         log.warning(f'Theme name "{theme_name}" is already a URI')
         return theme_name
-    return THEME_BASE_URI + theme_name.upper()
+    return THEME_BASE_URI + theme_name
 
 
 def theme_names_to_uris(names: list) -> list:
@@ -383,7 +385,8 @@ def populate_theme_groups(instance, clean_existing=False):
                     tval = json.loads(_t)
                 except Exception:
                     log.warning(f'Trying old themes format for {_t}')
-                    tval = _t.strip('{}').split(',')
+                    if _t is not None:
+                     tval = _t.strip('{}').split(',')
 
                 themes.extend(tval)
             # dont break the for loop: if aggregates are there, they get precedence
