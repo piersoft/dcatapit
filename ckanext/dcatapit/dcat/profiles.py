@@ -319,18 +319,30 @@ class ItalianDCATAPProfile(RDFProfile):
 
                 setlic = 0
                 resource_dict['license_type'] = license_type.uri
-                if 'ispra_rm' in dataset_dict.get('holder_identifier'):
+                if dataset_dict.get('holder_identifier'):
+                 if 'ispra_rm' in dataset_dict.get('holder_identifier'):
                           resource_dict['license_type']='';
                           license_type.uri='https://creativecommons.org/licenses/by/4.0/'
                           resource_dict['license_type']=license_type.uri
                           log.info("Imposto la licenza per ispra CCBY %s",resource_dict['license_type'])
                     #      dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
                           setlic = 1
-              # if 'r_marche' in dataset_dict.get('holder_identifier'):
-               #           dataset_dict['themes_aggregate'] =  "[{\"theme\": \"OP_DATPRO\", \"subthemes\": []}]"
-                #          log.info("Imposto frequenza sconosciuta e tema GOVE per r_marche)
-                 #         dataset_dict['frequency'] =  "http://publications.europa.eu/resource/authority/frequency/CONT"
-                  #        setlic = 1
+                 if (('Ragioneria' in dataset_dict.get('rightsHolder')) or ('DD PP' in dataset_dict.get('rightsHolder'))) or ('Interno' in dataset_dict.get('rightsHolder')): 
+     #             if 'm_ef' in dataset_dict.get('holder_identifier'):
+                          resource_dict['license_type'] = '';
+                          license_type.uri='https://creativecommons.org/licenses/by/4.0/'
+                          resource_dict['license'] = license_type.uri
+                          log.info("Imposto la licenza per BDAP CCBY %s",resource_dict['license_type'])
+                          dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
+                          setlic = 1
+                 if 'r_marche' in dataset_dict.get('holder_identifier'):
+                          resource_dict['license_type']='';
+                          license_type.uri='https://creativecommons.org/licenses/by/4.0/'
+                          resource_dict['license_type']=license_type.uri
+                          log.info("Imposto la licenza per Marche CCBY %s",resource_dict['license_type'])
+                    #      dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
+                          setlic = 1
+                          dataset_dict['license_id'].pop()
                 try:
                     license_name = names['it']
                 except KeyError:
@@ -370,7 +382,7 @@ class ItalianDCATAPProfile(RDFProfile):
         for lic_uri, id, doc_uri in licenses:
             license_ids.add(id)
 
-        if len(license_ids) >= 1:
+        if len(license_ids) == 1:
             log.info('license_ids ha lunghezza >=1')
             if setlic == 0:
              dataset_dict['license_id'] = license_ids.pop()
