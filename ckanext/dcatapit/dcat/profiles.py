@@ -327,8 +327,8 @@ class ItalianDCATAPProfile(RDFProfile):
                           log.info("Imposto la licenza per ispra CCBY %s",resource_dict['license_type'])
                     #      dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
                           setlic = 1
-                 if (('Ragioneria' in dataset_dict.get('rightsHolder')) or ('DD PP' in dataset_dict.get('rightsHolder'))) or ('Interno' in dataset_dict.get('rightsHolder')): 
-     #             if 'm_ef' in dataset_dict.get('holder_identifier'):
+                 if dataset_dict.get('rightsHolder'):
+                  if (('Ragioneria' in dataset_dict.get('rightsHolder')) or ('DD PP' in dataset_dict.get('rightsHolder'))) or ('Interno' in dataset_dict.get('rightsHolder')): 
                           resource_dict['license_type'] = '';
                           license_type.uri='https://creativecommons.org/licenses/by/4.0/'
                           resource_dict['license'] = license_type.uri
