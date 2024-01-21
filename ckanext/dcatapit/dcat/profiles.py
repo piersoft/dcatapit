@@ -291,9 +291,22 @@ class ItalianDCATAPProfile(RDFProfile):
             log.info('license1: %s',license1)
             if license1:
                 license=str(license1)
+                license=license.replace("https://dati.veneto.it/lod/licenses/CC_BY-SA_-_Condivisione_con_la_stessa_licenza","https://creativecommons.org/licenses/by-sa/4.0/")
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
                 license_uri = str(license)
-                license_uri=license_uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
+                license_uri=license_uri.replace("/summary/","/")
+                license_uri=license_uri.replace("A22_CCBY30/","A22_CCBY30")
+                license_uri=license_uri.replace("/legalcode/","/")
+                license_uri=license_uri.replace("/it//","/it/")
+                license_uri=license_uri.replace("/it/deed.it/","/it/")
+                license_uri=license_uri.replace("https://opendatacommons.org/licenses/odbl/","https://w3id.org/italia/controlled-vocabulary/licences/A310_ODBL")
+                license_uri=license_uri.replace("http://creativecommons.org","https://creativecommons.org")
+                license_uri=license_uri.replace("https://ontopia-lodview.agid.gov.it","https://w3id.org/italia")
+                license_uri=license_uri.replace("http://dati.beniculturali.it/iodl2","https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20")
+                license_uri=license_uri.replace("https://www.dati.gov.it/content/italian-open-data-license-v20","https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20")
+                license_uri=license_uri.replace("http://www.dati.gov.it/content/italian-open-data-license-v20","https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20")        
+        #        license_uri = str(license)
+         #         license_uri=license_uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
                 license_dct = self._object_value(license, DCT.type)
                 license_names = self.g.objects(license, FOAF.name)  # may be either the title or the id
                 license_version = self._object_value(license, FOAF.versionInfo)
@@ -318,24 +331,33 @@ class ItalianDCATAPProfile(RDFProfile):
                     )
 
                 setlic = 0
+                log.info('sezione license per GUID %s',dataset_dict.get('title', '---'))
+ #                if license_type:
                 resource_dict['license_type'] = license_type.uri
                 if dataset_dict.get('holder_identifier'):
-                 if 'ispra_rm' in dataset_dict.get('holder_identifier'):
+                   if 'r_veneto' in dataset_dict.get('holder_identifier'):
+                          resource_dict['license_type']='';
+                          license_type.uri='https://creativecommons.org/licenses/by/4.0/'
+                          resource_dict['license_type']=license_type.uri
+                          log.info("Imposto la licenza per Veneto CCBY %s",resource_dict['license_type'])
+                    #      dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
+                          setlic = 1
+                   if 'ispra_rm' in dataset_dict.get('holder_identifier'):
                           resource_dict['license_type']='';
                           license_type.uri='https://creativecommons.org/licenses/by/4.0/'
                           resource_dict['license_type']=license_type.uri
                           log.info("Imposto la licenza per ispra CCBY %s",resource_dict['license_type'])
                     #      dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
                           setlic = 1
-                 if dataset_dict.get('rightsHolder'):
-                  if (('Ragioneria' in dataset_dict.get('rightsHolder')) or ('DD PP' in dataset_dict.get('rightsHolder'))) or ('Interno' in dataset_dict.get('rightsHolder')): 
+                   if dataset_dict.get('rightsHolder'):
+                      if (('Ragioneria' in dataset_dict.get('rightsHolder')) or ('DD PP' in dataset_dict.get('rightsHolder'))) or ('Interno' in dataset_dict.get('rightsHolder')):
                           resource_dict['license_type'] = '';
                           license_type.uri='https://creativecommons.org/licenses/by/4.0/'
                           resource_dict['license'] = license_type.uri
                           log.info("Imposto la licenza per BDAP CCBY %s",resource_dict['license_type'])
                           dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
                           setlic = 1
-                 if 'r_marche' in dataset_dict.get('holder_identifier'):
+                   if 'r_marche' in dataset_dict.get('holder_identifier'):
                           resource_dict['license_type']='';
                           license_type.uri='https://creativecommons.org/licenses/by/4.0/'
                           resource_dict['license_type']=license_type.uri
@@ -349,7 +371,13 @@ class ItalianDCATAPProfile(RDFProfile):
                     try:
                         license_name = names['en']
                     except KeyError:
-                        license_name = names.values()[0] if names else license_type.default_name
+                        log.warning('license_name non ESISTE')
+                        license_name = 'Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)'
+                   #     if not license_type.uri:
+                    #     license_type.uri='https://creativecommons.org/licenses/by/4.0/'
+                     #   if not license_type.document_uri:
+                      #   license_type.document_uri='https://creativecommons.org/licenses/by/4.0/'
+ #                        license_name = names.values()[0] if names else license_type.default_name
 
                 log.info('Setting lincense %s %s %s', license_type.uri, license_name, license_type.document_uri)
  #                licenses.append((license_type.document_uri, license_name,license_type.document_uri))
@@ -849,7 +877,9 @@ class ItalianDCATAPProfile(RDFProfile):
         g.add((poc, VCARD.fn, Literal(org_dict.get('name'))))
 
         if 'email' in org_dict.keys():  # this element is mandatory for dcatapit, but it may not have been filled for imported datasets
-            g.add((poc, VCARD.hasEmail, URIRef(org_dict.get('email'))))
+            emailclean=org_dict.get('email').replace('mailto:','')
+            emailclean=emailclean.replace('Non disponibile','')
+            g.add((poc, VCARD.hasEmail, URIRef(emailclean)))
         if 'telephone' in org_dict.keys():
             g.add((poc, VCARD.hasTelephone, Literal(org_dict.get('telephone'))))
         if 'site' in org_dict.keys():
