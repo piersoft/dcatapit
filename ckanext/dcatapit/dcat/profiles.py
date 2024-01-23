@@ -742,14 +742,15 @@ class ItalianDCATAPProfile(RDFProfile):
             landing_page_uri = dataset_uri(dataset_dict)  # TODO: preserve original URI if harvested
 
         if 'r_marche' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","goodpa.regione.marche.it")
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://goodpa.regione.marche.it")
         if 'r_emiro' in dataset_dict.get('holder_identifier'):
             landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.emilia-romagna.it")
         if 'r_toscan' in dataset_dict.get('holder_identifier'):
             landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.toscana.it")
         if 'p_TN' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.trentino.it")
-
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.trentino.it")
+        if 'f_052' in dataset_dict.get('holder_identifier'):
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.comune.matera.it")
         self.g.add((dataset_ref, DCAT.landingPage, URIRef(landing_page_uri)))
 
         # conformsTo
