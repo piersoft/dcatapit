@@ -288,13 +288,11 @@ class ItalianDCATAPProfile(RDFProfile):
 
             # License
             license = self._object(distribution, DCT.license)
-            #log.info('license: %s',license)
-            if license is not None:
-
+            log.info('license: %s',license)
+            if license:
                 license=license.replace("https://api.smartdatanet.it/metadataapi/api/license/CCBY","https://creativecommons.org/licenses/by/4.0/")
                 license=license.replace("https://dati.veneto.it/lod/licenses/CC_BY-SA_-_Condivisione_con_la_stessa_licenza","https://creativecommons.org/licenses/by-sa/4.0/")
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
-                license=license.replace("/summary/","/")
                 license=license.replace("A22_CCBY30/","A22_CCBY30")
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A11_CCO10","https://creativecommons.org/publicdomain/zero/1.0/")
                 license=license.replace("/legalcode/","/")
@@ -312,6 +310,7 @@ class ItalianDCATAPProfile(RDFProfile):
                 license_names = self.g.objects(license, FOAF.name)  # may be either the title or the id
                 license_version = self._object_value(license, FOAF.versionInfo)
                 license_uri = str(license)
+
                 names = {}
                 prefname = None
                 for l in license_names:
@@ -325,7 +324,12 @@ class ItalianDCATAPProfile(RDFProfile):
                                                                 prefname,
                                                                 **names)
                 if license_type is None:
-                   continue
+                   license_type = interfaces.get_license_from_dcat(str(license),
+                                                                license_dct,
+                                                                prefname,
+                                                                **names)
+                   log.debug('license_type is %s e continuo', license_type)
+    #                continue
 
                 if license_version and str(license_version) != license_type.version:
                     log.warning(
@@ -335,7 +339,7 @@ class ItalianDCATAPProfile(RDFProfile):
                     )
 
                 setlic = 0
-                  # log.info('sezione license per GUID %s',dataset_dict.get('title', '---'))
+                log.info('sezione license per GUID %s',dataset_dict.get('title', '---'))
 
   # forse solo nell if che segue si fanno i replace
 
@@ -344,9 +348,9 @@ class ItalianDCATAPProfile(RDFProfile):
                    license_type.uri=license_type.uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A11_CCO10","https://creativecommons.org/publicdomain/zero/1.0/")
                    license_type.uri=license_type.uri.replace("https://creativecommons.org/licenses/by/4.0/deed.it","https://creativecommons.org/licenses/by/4.0/")
                    license_type.uri=license_type.uri.replace("https://api.smartdatanet.it/metadataapi/api/license/CCBY","https://creativecommons.org/licenses/by/4.0/")
-                resource_dict['license_type'] = license_type.uri
-
-                if dataset_dict.get('holder_identifier'):
+                   resource_dict['license_type'] = license_type.uri
+                   log.debug('license_type.uri: %s',license_type.uri)
+ #                   if dataset_dict.get('holder_identifier'):
                     # if 'ispra' in dataset_dict.get('holder_identifier'):
                      #      resource_dict['license_type']='';
                       #      license_type.uri='https://creativecommons.org/licenses/by/4.0/'
@@ -370,18 +374,33 @@ class ItalianDCATAPProfile(RDFProfile):
                     #      dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
                           setlic = 1
                      #      dataset_dict['license_id'].pop()
+                   if 'r_friuve' in dataset_dict.get('holder_identifier'):
+                          resource_dict['license_type']='';
+                          license_type.uri='https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20'
+                          resource_dict['license_type']=license_type.uri
+                          log.info("Imposto la licenza per Friuli IoDL %s",resource_dict['license_type'])
+                    #      dataset_dict['license_id'] =  "Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)"
+                          setlic = 1
+                     #      dataset_dict['license_id'].pop()
+                else:
+                  license=license.replace("https://api.smartdatanet.it/metadataapi/api/license/CCBY","https://creativecommons.org/licenses/by/4.0/")
+                  license=license.replace("https://dati.veneto.it/lod/licenses/CC_BY-SA_-_Condivisione_con_la_stessa_licenza","https://creativecommons.org/licenses/by-sa/4.0/")
+                  license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
+                  license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20","https://www.dati.gov.it/content/italian-open-data-license-v20")
+                  resource_dict['license_type'] = str(license)   
                 try:
                     license_name = names['it']
                 except KeyError:
                     try:
                         license_name = names['en']
                     except KeyError:
-                           #log.warning('license_name non ESISTE')
+                         log.warning('license_name non ESISTE')
                          license_name = 'Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)'
    #                       license_name = names.values()[0] if names else license_type.default_name
 
-   #              log.info('Setting lincense %s %s %s', license_type.uri, license_name, license_type.document_uri)
-                if license_type.uri != None:
+   #             log.info('Setting lincense %s %s %s', license_type.uri, license_name, license_type.document_uri)
+                if license_type is not None:
+                 log.info('Setting lincense %s %s %s', license_type.uri, license_name, license_type.document_uri)
                  license_type.uri=license_type.uri.replace("/legalcode/","/")
                  license_type.uri=license_type.uri.replace("/it//","/it/")
                  license_type.uri=license_type.uri.replace("/it/deed.it/","/it/")
@@ -394,9 +413,9 @@ class ItalianDCATAPProfile(RDFProfile):
                  license_type.uri=license_type.uri.replace("http://dati.beniculturali.it/iodl2","https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20")
                  license_type.uri=license_type.uri.replace("https://www.dati.gov.it/content/italian-open-data-license-v20","https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20")
                  license_type.uri=license_type.uri.replace("http://www.dati.gov.it/content/italian-open-data-license-v20","https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20")
-                 license_type.uri=license_type.uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","")
-                 license_type.uri=license_type.uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A11_CCO10","")
-                 license_type.uri=license_type.uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20","")
+            #     license_type.uri=license_type.uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","")
+            #     license_type.uri=license_type.uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A11_CCO10","")
+            #     license_type.uri=license_type.uri.replace("https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20","")
                  license_type.uri=license_type.uri.replace("https://api.smartdatanet.it/metadataapi/api/license/CCBY","https://creativecommons.org/licenses/by/4.0/")
                  licenses.append((license_type.uri, license_name, license_type.document_uri))
             else:
@@ -427,9 +446,9 @@ class ItalianDCATAPProfile(RDFProfile):
         for lic_uri, id, doc_uri in licenses:
             license_ids.add(id)
 
-        if len(license_ids) >= 1:
+        if len(license_ids) == 1:
             #log.info('license_ids ha lunghezza >=1')
-            #if setlic == 0:
+            if setlic == 0:
              dataset_dict['license_id'] = license_ids.pop()
             # TODO Map to internally defined licenses
         else:
@@ -741,6 +760,14 @@ class ItalianDCATAPProfile(RDFProfile):
         else:
             landing_page_uri = dataset_uri(dataset_dict)  # TODO: preserve original URI if harvested
 
+        if 'r_lazio' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.lazio.it/catalog")
+        if 'r_basili' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.regione.basilicata.it/catalog")
+        if 'c_a944' in dataset_dict.get('holder_identifier'):  
+            landing_page_uri = dataset_uri(dataset_dict)
         if 'r_marche' in dataset_dict.get('holder_identifier'):
             landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://goodpa.regione.marche.it")
         if 'r_emiro' in dataset_dict.get('holder_identifier'):
@@ -748,10 +775,28 @@ class ItalianDCATAPProfile(RDFProfile):
         if 'r_toscan' in dataset_dict.get('holder_identifier'):
             landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.toscana.it")
         if 'p_TN' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.trentino.it")
         if 'f_052' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.comune.matera.it")
+        if 'c_f158' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","opendata.comune.messina.it")
+        if 'c_f205' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("http://dati.comune.milano.it","https://dati.comune.milano.it")
+        if 'c_e506' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+       #     landing_page_uri=landing_page_uri.replace("http://dati.comune.milano.it","https://dati.comune.milano.it")
+        if 'regcal' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+
+        landing_page_uri += '/'
+
         self.g.add((dataset_ref, DCAT.landingPage, URIRef(landing_page_uri)))
+
+#        self.g.add((dataset_ref, DCAT.landingPage, URIRef(landing_page_uri)))
 
         # conformsTo
         self.g.remove((dataset_ref, DCT.conformsTo, None))
@@ -958,6 +1003,12 @@ class ItalianDCATAPProfile(RDFProfile):
                  #  log.info('resource_distribution_it %s',distribution)
             if 'r_toscan' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace("www.piersoftckan.biz","dati.toscana.it")
+              distribution=URIRef(distribution)
+            if 'r_basili' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace("www.piersoftckan.biz","dati.regione.basilicata.it/catalog")
+              distribution=URIRef(distribution)
+            if 'r_lazio' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace("https://www.piersoftckan.biz","http://dati.lazio.it/catalog")
               distribution=URIRef(distribution)
                  #  log.info('resource_distribution_it %s',distribution)
             # Add the DCATAPIT type
@@ -1316,6 +1367,8 @@ class ItalianDCATAPProfile(RDFProfile):
         # language
         langs = config.get('ckan.locales_offered', 'it')
         if isinstance(langs, str):
+    # Convert list to a space-separated string
+         langs = ' '.join(langs)
          for lang_offered in langs.split():
             lang_code = lang_mapping_ckan_to_voc.get(lang_offered)
             if lang_code:
