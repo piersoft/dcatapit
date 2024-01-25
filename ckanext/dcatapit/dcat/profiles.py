@@ -791,7 +791,9 @@ class ItalianDCATAPProfile(RDFProfile):
        #     landing_page_uri=landing_page_uri.replace("http://dati.comune.milano.it","https://dati.comune.milano.it")
         if 'regcal' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-
+        if 'p_bz' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            
         landing_page_uri += '/'
 
         self.g.add((dataset_ref, DCAT.landingPage, URIRef(landing_page_uri)))
