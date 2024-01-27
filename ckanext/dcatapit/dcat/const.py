@@ -50,5 +50,14 @@ format_mapping = {
     'CSV': 'CSV',
     'XLS': 'XLS',
     'ODS': 'ODS',
+    'JSON': 'JSON',
+    'WFS': 'MAP_SRVC',
+    'XLSX': 'XLSX',
+    'GEOJSON': 'GEOJSON',
+    'XML': 'XML',
+    'xlsx': 'XLSX',
+    'GeoJson': 'GEOJSON',
+    'API': 'API',
+    'WCS': 'MAP_SRVC',
     'ZIP': 'OP_DATPRO',  # requires to be more specific, can't infer
 }
