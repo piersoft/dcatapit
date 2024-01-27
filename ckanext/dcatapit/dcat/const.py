@@ -59,5 +59,6 @@ format_mapping = {
     'GeoJson': 'GEOJSON',
     'API': 'API',
     'WCS': 'MAP_SRVC',
-    'ZIP': 'OP_DATPRO',  # requires to be more specific, can't infer
+    'PDF': 'PDF',
+    'ZIP': 'ZIP',  # requires to be more specific, can't infer
 }
