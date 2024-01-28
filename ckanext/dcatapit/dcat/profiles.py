@@ -662,7 +662,7 @@ class ItalianDCATAPProfile(RDFProfile):
                            FREQ_BASE_URI)
         # self._add_concept(FREQ_CONCEPTS, dataset_dict.get('frequency', DEFAULT_VOCABULARY_KEY))
 
-        # replace landing page
+        # replace landing page if necessary 
         self._remove_node(dataset_dict, dataset_ref, ('url', DCAT.landingPage, None, URIRef))
         landing_page_uri = None
         if dataset_dict.get('name'):
