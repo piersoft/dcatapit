@@ -669,6 +669,8 @@ class ItalianDCATAPProfile(RDFProfile):
             landing_page_uri = '{0}/dataset/{1}'.format(catalog_uri().rstrip('/'), dataset_dict['name'])
         else:
             landing_page_uri = dataset_uri(dataset_dict)  # TODO: preserve original URI if harvested
+
+        noaddsl=0
         if 'r_lazio' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.lazio.it/catalog")
@@ -712,8 +714,12 @@ class ItalianDCATAPProfile(RDFProfile):
             landing_page_uri = dataset_uri(dataset_dict)
         if 'm_bac' in dataset_dict.get('holder_identifier'):
             landing_page_uri = 'http://dati.san.beniculturali.it/dataset'
-
-        landing_page_uri += '/'
+        if 'M_ef' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://sparql-noipa.mef.gov.it")
+            noaddsl=1
+        if noaddsl==0:
+           landing_page_uri += '/'
         self.g.add((dataset_ref, DCAT.landingPage, URIRef(landing_page_uri)))
 
         # conformsTo
