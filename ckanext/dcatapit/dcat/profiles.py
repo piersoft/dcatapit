@@ -270,6 +270,13 @@ class ItalianDCATAPProfile(RDFProfile):
             resource_dict['url'] = (self._object_value(distribution, DCAT.downloadURL) or
                                     self._object_value(distribution, DCAT.accessURL))
 
+            if 'csv' in resource_dict['url']:
+                 resource_dict['format']='CSV'
+            if 'link' in resource_dict['url']:
+                 resource_dict['format']='HTML_SIMPL'
+            if 'ZIP' in resource_dict['url']:
+                 resource_dict['format']='ZIP'
+
             # URI 0..1
             for predicate, key, base_uri in (
                     (DCT['format'], 'format', FORMAT_BASE_URI),  # Format
@@ -290,7 +297,11 @@ class ItalianDCATAPProfile(RDFProfile):
                 license=license.replace("https://api.smartdatanet.it/metadataapi/api/license/CCBY","https://creativecommons.org/licenses/by/4.0/")
                 license=license.replace("https://dati.veneto.it/lod/licenses/CC_BY-SA_-_Condivisione_con_la_stessa_licenza","https://creativecommons.org/licenses/by-sa/4.0/")
                 license=license.replace("https://creativecommons.org/licenses/by/4.0/deed.it","https://creativecommons.org/licenses/by/4.0/")
-
+                license=license.replace("https://sparql-noipa.mef.gov.it/metadata/Licenza","https://creativecommons.org/licenses/by/4.0/")
+                license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21:CCBY40","https://creativecommons.org/licenses/by/4.0/")
+                license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A11:CCO10","https://creativecommons.org/publicdomain/zero/1.0/")
+                license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20","https://www.dati.gov.it/content/italian-open-data-license-v20")
+                license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
 
                 license_uri = str(license)
                 license_dct = self._object_value(license, DCT.type)
@@ -662,13 +673,17 @@ class ItalianDCATAPProfile(RDFProfile):
                            FREQ_BASE_URI)
         # self._add_concept(FREQ_CONCEPTS, dataset_dict.get('frequency', DEFAULT_VOCABULARY_KEY))
 
-        # replace landing page if necessary 
+        # replace landing page
         self._remove_node(dataset_dict, dataset_ref, ('url', DCAT.landingPage, None, URIRef))
         landing_page_uri = None
         if dataset_dict.get('name'):
             landing_page_uri = '{0}/dataset/{1}'.format(catalog_uri().rstrip('/'), dataset_dict['name'])
         else:
             landing_page_uri = dataset_uri(dataset_dict)  # TODO: preserve original URI if harvested
+
+        noaddsl=0
+        if 'c_l219' in dataset_dict.get('holder_identifier'):
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://aperto.comune.torino.it")
         if 'r_lazio' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.lazio.it/catalog")
@@ -712,8 +727,72 @@ class ItalianDCATAPProfile(RDFProfile):
             landing_page_uri = dataset_uri(dataset_dict)
         if 'm_bac' in dataset_dict.get('holder_identifier'):
             landing_page_uri = 'http://dati.san.beniculturali.it/dataset'
-
-        landing_page_uri += '/'
+        if 'uni_ba' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://opendata.uniba.it")
+        if 'M_ef' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://sparql-noipa.mef.gov.it")
+            noaddsl=1
+        if 'm_pi' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.istruzione.it")
+            noaddsl=1
+        if 'r_campan' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://dati.regione.campania.it")
+            noaddsl=1
+        if 'uni_ba' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://opendata.uniba.it")
+            noaddsl=1
+        if 'uni_bo' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://dati.unibo.it")
+            noaddsl=1
+        if 'r_sicili' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://dati.regione.sicilia.it")
+            noaddsl=1
+        if 'c_h501' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://dati.comune.roma.it")
+            noaddsl=1
+        if 'cr_campa' in dataset_dict.get('holder_identifier'):
+            self._remove_node(dataset_dict, dataset_ref, ('url', DCAT.landingPage, None, URIRef))
+            landing_page_uri = '{0}/dataset/{1}'.format(catalog_uri().rstrip('/'), dataset_dict['name'])
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://opendata-crc.di.unisa.it/")
+            landing_page_uri=landing_page_uri.replace("CONSIGLIO%20REGIONE%20CAMPANIA","")
+            landing_page_uri=landing_page_uri.replace("CONSIGLIO REGIONE CAMPANIA","")
+            landing_page_uri=landing_page_uri.replace("Consiglio%20Regionale%20Campania","")
+            landing_page_uri=landing_page_uri.replace("Consiglio Regionale Campania","")
+            noaddsl=1
+        if '00304260409' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://opendata.comune.rimini.it/")
+            noaddsl=1
+        if 'm_sa' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://www.dati.salute.gov.it")
+            noaddsl=1
+        if 'c_a345' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://ckan.opendatalaquila.it")
+            noaddsl=1
+        if 'cci' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://www.mistralportal.it")
+            noaddsl=1
+        if 'agid' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://indicepa.gov.it")
+            noaddsl=1
+        if 'r_lomb' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://www.dati.lombardia.it")
+            noaddsl=1
+        if noaddsl==0:
+           landing_page_uri += '/'
         self.g.add((dataset_ref, DCAT.landingPage, URIRef(landing_page_uri)))
 
         # conformsTo
@@ -909,6 +988,11 @@ class ItalianDCATAPProfile(RDFProfile):
         for resource_dict in dataset_dict.get('resources', []):
 
             distribution = URIRef(resource_uri(resource_dict))  # TODO: preserve original info if harvested
+
+
+            if 'c_l219' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace("https://www.piersoftckan.biz","http://aperto.comune.torino.it")
+              distribution=URIRef(distribution)
             if 'r_marche' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace("www.piersoftckan.biz","goodpa.regione.marche.it")
               distribution=URIRef(distribution)
@@ -929,16 +1013,34 @@ class ItalianDCATAPProfile(RDFProfile):
             if 'm_lps' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace("https://www.piersoftckan.biz","http://dati.lavoro.it")
               distribution=URIRef(distribution)
+            if 'cr_campa' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace("https://www.piersoftckan.biz","http://opendata-crc.di.unisa.it/")
+              distribution=URIRef(distribution)
+            if '00304260409' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace("https://www.piersoftckan.biz","https://opendata.comune.rimini.it/")
+              distribution=URIRef(distribution)
+            if 'c_a345' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace("www.piersoftckan.biz","ckan.opendatalaquila.it")
+              distribution=URIRef(distribution)
+
+
 
             # Add the DCATAPIT type
             g.add((distribution, RDF.type, DCATAPIT.Distribution))
 
-            # format
+            # format             
             self._remove_node(resource_dict, distribution, ('format', DCT['format'], None, Literal))
             if not self._add_uri_node(resource_dict, distribution, ('distribution_format', DCT['format'], None, URIRef),
                                       FORMAT_BASE_URI):
                 guessed_format = guess_format(resource_dict)
                 if guessed_format:
+                    log.debug('SONO IN GUESSED FORMAT')
+                    if 'CSV' in guessed_format:
+                       guessed_format='CSV'
+                    if 'ZIP' in guessed_format:
+                       guessed_format='ZIP'
+                    if 'link' in guessed_format:
+                       guessed_format='HTML_SIMPL'   
                     self.g.add((distribution, DCT['format'], URIRef(FORMAT_BASE_URI + guessed_format)))
                 else:
                     log.warning('No format for resource: %s / %s', dataset_dict.get('title', 'N/A'), resource_dict.get('description', 'N/A'))
@@ -1012,8 +1114,8 @@ class ItalianDCATAPProfile(RDFProfile):
                     if exclude and lang == default_lang:
                         continue
                     self.g.add((ref, pred, Literal(value, lang=lang)))
-        else:
-            log.warning('No mulitlang source data')
+      #  else:
+       #     log.warning('No mulitlang source data')
 
     def _add_right_holder(self, dataset_dict, org_dict, ref):
         basekey = 'holder'
@@ -1298,8 +1400,8 @@ class ItalianDCATAPProfile(RDFProfile):
         self.g.remove((catalog_ref, DCT.language, Literal(config.get(DEFAULT_LANG))))
 
     def log_remove(self, key, pred):
-        log.debug(f'Removing "{key}" type "{self.g.qname(pred)}"')
-
+         log.debug(f'Removing "{key}" type "{self.g.qname(pred)}"')
+          #pippo=key
 
 def organization_uri(orga_dict):
     '''
