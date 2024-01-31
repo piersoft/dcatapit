@@ -1028,7 +1028,7 @@ class ItalianDCATAPProfile(RDFProfile):
             # Add the DCATAPIT type
             g.add((distribution, RDF.type, DCATAPIT.Distribution))
 
-            # format             
+            # format
             self._remove_node(resource_dict, distribution, ('format', DCT['format'], None, Literal))
             if not self._add_uri_node(resource_dict, distribution, ('distribution_format', DCT['format'], None, URIRef),
                                       FORMAT_BASE_URI):
@@ -1040,7 +1040,7 @@ class ItalianDCATAPProfile(RDFProfile):
                     if 'ZIP' in guessed_format:
                        guessed_format='ZIP'
                     if 'link' in guessed_format:
-                       guessed_format='HTML_SIMPL'   
+                       guessed_format='HTML_SIMPL'
                     self.g.add((distribution, DCT['format'], URIRef(FORMAT_BASE_URI + guessed_format)))
                 else:
                     log.warning('No format for resource: %s / %s', dataset_dict.get('title', 'N/A'), resource_dict.get('description', 'N/A'))
