@@ -302,7 +302,9 @@ class ItalianDCATAPProfile(RDFProfile):
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A11:CCO10","https://creativecommons.org/publicdomain/zero/1.0/")
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20","https://www.dati.gov.it/content/italian-open-data-license-v20")
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
-
+                if dataset_dict.get('holder_identifier'):
+                  if 'r_campan' in dataset_dict['holder_identifier']:
+                    license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/C1_Unknown","https://creativecommons.org/licenses/by/4.0/")     
                 license_uri = str(license)
                 license_dct = self._object_value(license, DCT.type)
                 license_names = self.g.objects(license, FOAF.name)  # may be either the title or the id
@@ -320,6 +322,7 @@ class ItalianDCATAPProfile(RDFProfile):
                                                                 license_dct,
                                                                 prefname,
                                                                 **names)
+
                 log.debug('license_type from dcat %s',license_type)
 
                 if license_version and str(license_version) != license_type.version:
@@ -347,8 +350,7 @@ class ItalianDCATAPProfile(RDFProfile):
   #                      license_type.uri='https://w3id.org/italia/controlled-vocabulary/licences/C1_Unknown'
                         continue
 
-
-
+ 
                 log.info('Setting lincense %s %s %s', license_type.uri, license_name, license_type.document_uri)
 
                 licenses.append((license_type.uri, license_name, license_type.document_uri))
@@ -1028,7 +1030,7 @@ class ItalianDCATAPProfile(RDFProfile):
             # Add the DCATAPIT type
             g.add((distribution, RDF.type, DCATAPIT.Distribution))
 
-            # format
+            # format             
             self._remove_node(resource_dict, distribution, ('format', DCT['format'], None, Literal))
             if not self._add_uri_node(resource_dict, distribution, ('distribution_format', DCT['format'], None, URIRef),
                                       FORMAT_BASE_URI):
@@ -1040,7 +1042,7 @@ class ItalianDCATAPProfile(RDFProfile):
                     if 'ZIP' in guessed_format:
                        guessed_format='ZIP'
                     if 'link' in guessed_format:
-                       guessed_format='HTML_SIMPL'
+                       guessed_format='HTML_SIMPL'   
                     self.g.add((distribution, DCT['format'], URIRef(FORMAT_BASE_URI + guessed_format)))
                 else:
                     log.warning('No format for resource: %s / %s', dataset_dict.get('title', 'N/A'), resource_dict.get('description', 'N/A'))
