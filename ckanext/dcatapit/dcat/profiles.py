@@ -333,6 +333,7 @@ class ItalianDCATAPProfile(RDFProfile):
                             dataset_dict['license_id']=prefname
                             dataset_dict['license_title']=prefname
                             resource_dict['license_type'] = license_uri
+                            resource_dict['license_id']=prefname
                             setlic=1
                             license_uri=license_uri.replace("https://creativecommons.org/licenses/by/4.0/","https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40")
                  #log.debug('prima de from_dcat %s %s %s',license_uri,license_dct,prefname)
@@ -381,6 +382,7 @@ class ItalianDCATAPProfile(RDFProfile):
                             dataset_dict['license_id']=license_name
                             dataset_dict['license_title']=license_name
                             resource_dict['license_type'] = license_type.uri
+                            resource_dict['license_id']=license_name
                             setlic=1
                 log.info('Setting lincense %s %s %s', license_type.uri, license_name, license_type.document_uri)
                 
