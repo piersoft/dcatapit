@@ -36,6 +36,8 @@ from ckanext.dcatapit.schema import FIELD_THEMES_AGGREGATE
 DEFAULT_LANG = config.get('ckan.locale_default', 'it')
 HANDLED_LANGS = set(['it', 'fr', 'de', 'en'])
 OFFERED_LANGS = set(get_locales()).intersection(HANDLED_LANGS)
+PREF_LANDING= config.get('ckanext.dcat.base_uri')
+
 
 log = logging.getLogger(__name__)
 
@@ -722,38 +724,37 @@ class ItalianDCATAPProfile(RDFProfile):
 
         noaddsl=0
         if 'c_l219' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://aperto.comune.torino.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://aperto.comune.torino.it")
         if 'r_lazio' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.lazio.it/catalog")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://dati.lazio.it/catalog")
         if 'r_basili' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.regione.basilicata.it/catalog")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.regione.basilicata.it/catalog")
         if 'c_a944' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
         if 'aci' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://lod.aci.it/")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://lod.aci.it/")
         if 'r_marche' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://goodpa.regione.marche.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://goodpa.regione.marche.it")
         if 'r_emiro' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.emilia-romagna.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.emilia-romagna.it")
         if 'r_toscan' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.toscana.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.toscana.it")
         if 'p_TN' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.trentino.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://dati.trentino.it")
         if 'f_052' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.comune.matera.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://dati.comune.matera.it")
         if 'c_f158' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","opendata.comune.messina.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://opendata.comune.messina.it")
         if 'c_f205' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("http://dati.comune.milano.it","https://dati.comune.milano.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.comune.milano.it")
         if 'c_e506' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-       #     landing_page_uri=landing_page_uri.replace("http://dati.comune.milano.it","https://dati.comune.milano.it")
         if 'regcal' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
         if 'p_bz' in dataset_dict.get('holder_identifier'):
@@ -768,39 +769,43 @@ class ItalianDCATAPProfile(RDFProfile):
             landing_page_uri = 'http://dati.san.beniculturali.it/dataset'
         if 'uni_ba' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://opendata.uniba.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://opendata.uniba.it")
         if 'M_ef' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://sparql-noipa.mef.gov.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://sparql-noipa.mef.gov.it")
+            noaddsl=1
+        if 'MEF-BDAP' in dataset_dict.get('holder_name'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            # landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://sparql-noipa.mef.gov.it")
             noaddsl=1
         if 'm_pi' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://dati.istruzione.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://dati.istruzione.it")
             noaddsl=1
         if 'r_campan' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://dati.regione.campania.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.regione.campania.it")
             noaddsl=1
         if 'uni_ba' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://opendata.uniba.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://opendata.uniba.it")
             noaddsl=1
         if 'uni_bo' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://dati.unibo.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.unibo.it")
             noaddsl=1
         if 'r_sicili' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://dati.regione.sicilia.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.regione.sicilia.it")
             noaddsl=1
         if 'c_h501' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://dati.comune.roma.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.comune.roma.it")
             noaddsl=1
         if 'cr_campa' in dataset_dict.get('holder_identifier'):
             self._remove_node(dataset_dict, dataset_ref, ('url', DCAT.landingPage, None, URIRef))
             landing_page_uri = '{0}/dataset/{1}'.format(catalog_uri().rstrip('/'), dataset_dict['name'])
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://opendata-crc.di.unisa.it/")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://opendata-crc.di.unisa.it/")
             landing_page_uri=landing_page_uri.replace("CONSIGLIO%20REGIONE%20CAMPANIA","")
             landing_page_uri=landing_page_uri.replace("CONSIGLIO REGIONE CAMPANIA","")
             landing_page_uri=landing_page_uri.replace("Consiglio%20Regionale%20Campania","")
@@ -808,39 +813,39 @@ class ItalianDCATAPProfile(RDFProfile):
             noaddsl=1
         if '00304260409' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://opendata.comune.rimini.it/")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://opendata.comune.rimini.it/")
             noaddsl=1
         if 'm_sa' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","http://www.dati.salute.gov.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://www.dati.salute.gov.it")
             noaddsl=1
         if 'c_a345' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://ckan.opendatalaquila.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://ckan.opendatalaquila.it")
             noaddsl=1
         if 'cci' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://www.mistralportal.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://www.mistralportal.it")
             noaddsl=1
         if 'agid' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://indicepa.gov.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://indicepa.gov.it")
             noaddsl=1
         if 'r_lomb' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("https://www.piersoftckan.biz","https://www.dati.lombardia.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://www.dati.lombardia.it")
             noaddsl=1
         if 'uds_ca' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","data.tdm-project.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://data.tdm-project.it")
             noaddsl=1
         if 'PCM - Dipartimento della Protezione Civile' in dataset_dict.get('holder_name'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","github.com/pcm-dpc")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://github.com/pcm-dpc")
         if 'r_puglia' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace("www.piersoftckan.biz","dati.puglia.it")
-            noaddsl=1            
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.puglia.it")
+            noaddsl=1 
 
         if noaddsl==0:
            landing_page_uri += '/'
@@ -1042,40 +1047,40 @@ class ItalianDCATAPProfile(RDFProfile):
 
 
             if 'c_l219' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("https://www.piersoftckan.biz","http://aperto.comune.torino.it")
+              distribution = distribution.replace(PREF_LANDING,"http://aperto.comune.torino.it")
               distribution=URIRef(distribution)
             if 'r_marche' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("www.piersoftckan.biz","goodpa.regione.marche.it")
+              distribution = distribution.replace(PREF_LANDING,"http://goodpa.regione.marche.it")
               distribution=URIRef(distribution)
                 #  log.info('resource_distribution_it %s',distribution)
             if 'r_emiro' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace("dati.comune.fe.it","https://dati.comune.fe.it")
-              distribution = distribution.replace("www.piersoftckan.biz","dati.emilia-romagna.it")
+              distribution = distribution.replace(PREF_LANDING,"https://dati.emilia-romagna.it")
               distribution=URIRef(distribution)
                  #  log.info('resource_distribution_it %s',distribution)
             if 'r_toscan' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("www.piersoftckan.biz","dati.toscana.it")
+              distribution = distribution.replace(PREF_LANDING,"https://dati.toscana.it")
               distribution=URIRef(distribution)
             if 'r_basili' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("www.piersoftckan.biz","dati.regione.basilicata.it/catalog")
+              distribution = distribution.replace(PREF_LANDING,"https://dati.regione.basilicata.it/catalog")
               distribution=URIRef(distribution)
             if 'r_lazio' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("https://www.piersoftckan.biz","http://dati.lazio.it/catalog")
+              distribution = distribution.replace(PREF_LANDING,"http://dati.lazio.it/catalog")
               distribution=URIRef(distribution)
             if 'm_lps' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("https://www.piersoftckan.biz","http://dati.lavoro.it")
+              distribution = distribution.replace(PREF_LANDING,"http://dati.lavoro.it")
               distribution=URIRef(distribution)
             if 'cr_campa' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("https://www.piersoftckan.biz","http://opendata-crc.di.unisa.it/")
+              distribution = distribution.replace(PREF_LANDING,"http://opendata-crc.di.unisa.it/")
               distribution=URIRef(distribution)
             if '00304260409' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("https://www.piersoftckan.biz","https://opendata.comune.rimini.it/")
+              distribution = distribution.replace(PREF_LANDING,"https://opendata.comune.rimini.it/")
               distribution=URIRef(distribution)
             if 'c_a345' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("www.piersoftckan.biz","ckan.opendatalaquila.it")
+              distribution = distribution.replace(PREF_LANDING,"ckan.opendatalaquila.it")
               distribution=URIRef(distribution)
             if 'uds_ca' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace("www.piersoftckan.biz","data.tdm-project.it")
+              distribution = distribution.replace(PREF_LANDING,"data.tdm-project.it")
               distribution=URIRef(distribution)
 
 
