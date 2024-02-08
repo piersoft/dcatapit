@@ -45,7 +45,9 @@ def theme_name_to_uri(theme_name: str) -> str:
      if theme_name.startswith('http'):
         log.warning(f'Theme name "{theme_name}" is already a URI')
         return theme_name
-    return THEME_BASE_URI + theme_name.upper()
+     return THEME_BASE_URI + theme_name.upper()
+    else:
+     return THEME_BASE_URI + theme_name
 
 
 def theme_names_to_uris(names: list) -> list:
