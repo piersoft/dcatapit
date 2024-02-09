@@ -272,21 +272,45 @@ class ItalianDCATAPProfile(RDFProfile):
             resource_dict['url'] = (self._object_value(distribution, DCAT.downloadURL) or
                                     self._object_value(distribution, DCAT.accessURL))
 
-            if 'csv' in resource_dict['url']:
+            if 'csv' in resource_dict['url']: 
+                 resource_dict.pop('format', None)
                  resource_dict['format']='CSV'
             if 'link' in resource_dict['url']:
+                 resource_dict.pop('format', None)
                  resource_dict['format']='HTML_SIMPL'
             if 'ZIP' in resource_dict['url']:
+                 resource_dict.pop('format', None)
                  resource_dict['format']='ZIP'
-
+            if 'pdf' in resource_dict['url']:
+                 resource_dict.pop('format', None)
+                 resource_dict['format']='PDF'
+            if 'PDF' in resource_dict['url']:
+                 resource_dict.pop('format', None) 
+                 resource_dict['format']='PDF'
             # URI 0..1
             for predicate, key, base_uri in (
                     (DCT['format'], 'format', FORMAT_BASE_URI),  # Format
             ):
                 valueRef = self._object_value(distribution, predicate)
                 if valueRef:
+                    if 'csv' in resource_dict['url']:
+                     resource_dict.pop('format', None)
+                     resource_dict['format']='CSV'
+                    if 'link' in resource_dict['url']:
+                     resource_dict.pop('format', None)
+                     resource_dict['format']='HTML_SIMPL'
+                    if 'ZIP' in resource_dict['url']:
+                     resource_dict.pop('format', None)
+                     resource_dict['format']='ZIP'
+                    if 'pdf' in resource_dict['url']:
+                     resource_dict.pop('format', None)
+                     resource_dict['format']='PDF'
+                    if 'PDF' in resource_dict['url']:
+                     resource_dict.pop('format', None)
+                     resource_dict['format']='PDF'
                     value = self._strip_uri(valueRef, base_uri)
                     resource_dict[key] = value
+                    log.debug('value in dct format %s',value)
                 else:
                     log.warning('No %s found for resource "%s"::"%s"',
                                 predicate,
@@ -301,7 +325,8 @@ class ItalianDCATAPProfile(RDFProfile):
 
                 license=license.replace("https://api.smartdatanet.it/metadataapi/api/license/CCBY","https://creativecommons.org/licenses/by/4.0/")
                 license=license.replace("https://dati.veneto.it/lod/licenses/CC_BY-SA_-_Condivisione_con_la_stessa_licenza","https://creativecommons.org/licenses/by-sa/4.0/")
-                license=license.replace("https://creativecommons.org/licenses/by/4.0/deed.it","https://creativecommons.org/licenses/by/4.0/")
+                license=license.replace("deed.it","")
+                log.debug('sto sostituendo le licenze')
                 license=license.replace("https://sparql-noipa.mef.gov.it/metadata/Licenza","https://creativecommons.org/licenses/by/4.0/")
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21:CCBY40","https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40")
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A11:CCO10","https://w3id.org/italia/controlled-vocabulary/licences/A11_CCO10")
@@ -333,9 +358,10 @@ class ItalianDCATAPProfile(RDFProfile):
                             dataset_dict['license_id']=prefname
                             dataset_dict['license_title']=prefname
                             resource_dict['license_type'] = license_uri
-                            resource_dict['license_id']=prefname
+                            resource_dict['license_id'] = prefname
                             setlic=1
                             license_uri=license_uri.replace("https://creativecommons.org/licenses/by/4.0/","https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40")
+                            license_uri=license_uri.replace("deed.it","")
                  #log.debug('prima de from_dcat %s %s %s',license_uri,license_dct,prefname)
                 license_type = interfaces.get_license_from_dcat(license_uri,
                                                                 license_dct,
@@ -382,7 +408,7 @@ class ItalianDCATAPProfile(RDFProfile):
                             dataset_dict['license_id']=license_name
                             dataset_dict['license_title']=license_name
                             resource_dict['license_type'] = license_type.uri
-                            resource_dict['license_id']=license_name
+                            resource_dict['license_id'] = license_name
                             setlic=1
                 log.info('Setting lincense %s %s %s', license_type.uri, license_name, license_type.document_uri)
                 
@@ -1044,9 +1070,30 @@ class ItalianDCATAPProfile(RDFProfile):
 
         # Resources
         for resource_dict in dataset_dict.get('resources', []):
+            log.debug('Debug formato %s',resource_dict.get('url'))
+            if 'csv' in resource_dict.get('url'):
+                 resource_dict.pop('format', None)
+                 resource_dict['format']='CSV'
+                 resource_dict['distribution_format']='CSV'
+            if 'link' in resource_dict.get('url'):
+                 resource_dict.pop('format', None)
+                 resource_dict['format']='HTML_SIMPL'
+                 resource_dict['distribution_format']='HTML_SIMPL'
+            if 'ZIP' in resource_dict.get('url'):
+                 resource_dict.pop('format', None)
+                 resource_dict['format']='ZIP'
+                 resource_dict['distribution_format']='ZIP'
+            if 'pdf' in resource_dict.get('url'):
+                 resource_dict.pop('format', None)
+                 resource_dict['format']='PDF'
+                 resource_dict['distribution_format']='PDF'
+            if 'PDF' in resource_dict.get('url'):
+                 resource_dict.pop('format', None)
+                 resource_dict['format']='PDF'
+                 resource_dict['distribution_format']='PDF'
 
             distribution = URIRef(resource_uri(resource_dict))  # TODO: preserve original info if harvested
-
+            
 
             if 'c_l219' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace(PREF_LANDING,"http://aperto.comune.torino.it")
@@ -1091,17 +1138,22 @@ class ItalianDCATAPProfile(RDFProfile):
 
             # format             
             self._remove_node(resource_dict, distribution, ('format', DCT['format'], None, Literal))
+            # log.debug('prima del guessed_format ma dopo il remove')
             if not self._add_uri_node(resource_dict, distribution, ('distribution_format', DCT['format'], None, URIRef),
                                       FORMAT_BASE_URI):
                 guessed_format = guess_format(resource_dict)
                 if guessed_format:
-                     #log.debug('SONO IN GUESSED FORMAT')
-                    if 'CSV' in guessed_format:
+                    log.debug('SONO IN GUESSED FORMAT')
+                    if 'CSV' in resource_dict['url']:
                        guessed_format='CSV'
-                    if 'ZIP' in guessed_format:
+                    if 'ZIP' in resource_dict['url']:
                        guessed_format='ZIP'
-                    if 'link' in guessed_format:
+                    if 'link' in resource_dict['url']:
                        guessed_format='HTML_SIMPL'   
+                    if 'pdf' in resource_dict['url']:
+                       guessed_format='PDF'
+                    if 'PDF' in resource_dict['url']:
+                       guessed_format='PDF'
                     self.g.add((distribution, DCT['format'], URIRef(FORMAT_BASE_URI + guessed_format)))
                 else:
                     log.warning('No format for resource: %s / %s', dataset_dict.get('title', 'N/A'), resource_dict.get('description', 'N/A'))
@@ -1127,8 +1179,9 @@ class ItalianDCATAPProfile(RDFProfile):
             # be lenient about license existence
             license_maybe = license_url or dcatapit_license
             if license_maybe:
+                license_maybe=license_maybe.replace("deed.it","")
                 license = URIRef(license_maybe)
-
+                log.debug('provo a patchare la licenza deed.it : %s',license)
                 g.add((license, RDF.type, DCATAPIT.LicenseDocument))
                 g.add((license, RDF.type, DCT.LicenseDocument))
                 g.add((license, DCT.type, URIRef(dcat_license)))
