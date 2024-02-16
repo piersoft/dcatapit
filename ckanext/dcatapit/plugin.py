@@ -529,7 +529,7 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
 
                 if aggr_raw is None or json.loads(aggr_raw) is None:
                     log.error(f'No Aggregates in dataset {pkg_dict.get("id", "_")}')
-                    aggr_raw = json.dumps([{'theme': 'OP_DATPRO', 'subthemes':[]}])
+                    aggr_raw = json.dumps([{'theme': 'GOVE', 'subthemes':[]}])
                     pkg_dict[FIELD_THEMES_AGGREGATE] = aggr_raw
 
                 themes = []
@@ -537,7 +537,9 @@ class DCATAPITPackagePlugin(plugins.SingletonPlugin, toolkit.DefaultDatasetForm,
                     themes.append(theme_name_to_uri(aggr['theme']))
 
                 extras = pkg_dict.get('extras', [])
-                extras.append({'key': 'theme', 'value': json.dumps(themes)})
+                extrasclean=json.dumps(themes)
+                extrasclean=extrasclean.replace("http://publications.europa.eu/resource/authority/data-theme/","")
+                extras.append({'key': 'theme', 'value': extrasclean})
                 pkg_dict['extras'] = extras
 
         # in some cases (automatic solr indexing after update)
