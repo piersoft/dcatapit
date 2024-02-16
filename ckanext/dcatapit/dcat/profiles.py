@@ -1133,6 +1133,9 @@ class ItalianDCATAPProfile(RDFProfile):
             if 'uds_ca' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace(PREF_LANDING,"data.tdm-project.it")
               distribution=URIRef(distribution)
+            if 'aci' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace(PREF_LANDING,"http://lod.aci.it")
+              distribution=URIRef(distribution)
 
 
             # Add the DCATAPIT type
