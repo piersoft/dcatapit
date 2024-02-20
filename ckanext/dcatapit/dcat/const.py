@@ -60,5 +60,7 @@ format_mapping = {
     'API': 'API',
     'WCS': 'MAP_SRVC',
     'PDF': 'PDF',
+    'DOC': 'DOC',
+    'xls': 'XLS',
     'ZIP': 'ZIP',  # requires to be more specific, can't infer
 }
