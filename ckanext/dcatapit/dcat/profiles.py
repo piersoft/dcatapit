@@ -1116,6 +1116,9 @@ class ItalianDCATAPProfile(RDFProfile):
               distribution = distribution.replace(PREF_LANDING,"https://dati.emilia-romagna.it")
               distribution=URIRef(distribution)
                  #  log.info('resource_distribution_it %s',distribution)
+            if 'm_it' in dataset_dict.get('holder_identifier'):
+              distribution = distribution.replace(PREF_LANDING,"https://www.interno.gov.it")
+              distribution=URIRef(distribution)
             if 'r_toscan' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace(PREF_LANDING,"https://dati.toscana.it")
               distribution=URIRef(distribution)
