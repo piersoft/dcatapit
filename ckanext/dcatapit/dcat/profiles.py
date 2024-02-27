@@ -410,7 +410,7 @@ class ItalianDCATAPProfile(RDFProfile):
 
                 if license_type.document_uri is not None:
                           if 'https://creativecommons.org/licenses/by/4.0/' in license_type.document_uri:
-                            log.warning('2. Licenza Sconosciuta nel dataset, provo a settare CCBY')
+                            #log.warning('2. Licenza Sconosciuta nel dataset, provo a settare CCBY')
                             license_name='Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)'
                             license_type.uri=license_type.uri.replace("C1_Unknown","A21_CCBY40")
                             dataset_dict['license_id']=license_name
@@ -1079,7 +1079,7 @@ class ItalianDCATAPProfile(RDFProfile):
 
         # Resources
         for resource_dict in dataset_dict.get('resources', []):
-            log.debug('Debug formato %s',resource_dict.get('url'))
+            #log.debug('Debug formato %s',resource_dict.get('url'))
             if 'csv' in resource_dict.get('url'):
                  resource_dict.pop('format', None)
                  resource_dict['format']='CSV'
@@ -1196,7 +1196,7 @@ class ItalianDCATAPProfile(RDFProfile):
             if license_maybe:
                 license_maybe=license_maybe.replace("deed.it","")
                 license = URIRef(license_maybe)
-                log.debug('provo a patchare la licenza deed.it : %s',license)
+                #log.debug('provo a patchare la licenza deed.it : %s',license)
                 g.add((license, RDF.type, DCATAPIT.LicenseDocument))
                 g.add((license, RDF.type, DCT.LicenseDocument))
                 g.add((license, DCT.type, URIRef(dcat_license)))
