@@ -771,7 +771,7 @@ class ItalianDCATAPProfile(RDFProfile):
         if 'aci' in dataset_dict.get('holder_identifier'):
             landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://lod.aci.it/")
         if 'r_marche' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.regione.marche.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.regione.marche.it/")
         if 'r_emiro' in dataset_dict.get('holder_identifier'):
             landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.emilia-romagna.it")
         if 'r_toscan' in dataset_dict.get('holder_identifier'):
