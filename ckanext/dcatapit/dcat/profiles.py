@@ -1112,23 +1112,23 @@ class ItalianDCATAPProfile(RDFProfile):
                 #  log.info('resource_distribution_it %s',distribution)
             if 'r_emiro' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace("dati.comune.fe.it","https://dati.comune.fe.it")
-              distribution = distribution.replace(PREF_LANDING,"https://dati.emilia-romagna.it")
+              distribution = distribution.replace(PREF_LANDING,"https://dati.emilia-romagna.it/")
               distribution=URIRef(distribution)
                  #  log.info('resource_distribution_it %s',distribution)
             if 'm_it' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace(PREF_LANDING,"https://www.interno.gov.it/")
               distribution=URIRef(distribution)
             if 'r_toscan' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace(PREF_LANDING,"https://dati.toscana.it")
+              distribution = distribution.replace(PREF_LANDING,"https://dati.toscana.it/")
               distribution=URIRef(distribution)
             if 'r_basili' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace(PREF_LANDING,"https://dati.regione.basilicata.it/catalog")
               distribution=URIRef(distribution)
             if 'r_lazio' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace(PREF_LANDING,"http://dati.lazio.it/catalog")
+              distribution = distribution.replace(PREF_LANDING,"http://dati.lazio.it/catalog/")
               distribution=URIRef(distribution)
             if 'm_lps' in dataset_dict.get('holder_identifier'):
-              distribution = distribution.replace(PREF_LANDING,"http://dati.lavoro.it")
+              distribution = distribution.replace(PREF_LANDING,"http://dati.lavoro.it/")
               distribution=URIRef(distribution)
             if 'cr_campa' in dataset_dict.get('holder_identifier'):
               distribution = distribution.replace(PREF_LANDING,"http://opendata-crc.di.unisa.it/")
