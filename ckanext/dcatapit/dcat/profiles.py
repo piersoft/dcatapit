@@ -758,14 +758,14 @@ class ItalianDCATAPProfile(RDFProfile):
             landing_page_uri = dataset_uri(dataset_dict)  # TODO: preserve original URI if harvested
 
         noaddsl=0
-        if 'c_l219' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://aperto.comune.torino.it")
+        if '00514490010' in dataset_dict.get('holder_identifier'):
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://aperto.comune.torino.it/")
         if 'r_lazio' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://dati.lazio.it/catalog")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://dati.lazio.it/catalog/")
         if 'r_basili' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.regione.basilicata.it/catalog")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.regione.basilicata.it/catalog/")
         if 'c_a944' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
         if 'aci' in dataset_dict.get('holder_identifier'):
@@ -773,13 +773,13 @@ class ItalianDCATAPProfile(RDFProfile):
         if 'r_marche' in dataset_dict.get('holder_identifier'):
             landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.regione.marche.it/")
         if 'r_emiro' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.emilia-romagna.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.emilia-romagna.it/")
         if 'r_toscan' in dataset_dict.get('holder_identifier'):
-            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.toscana.it")
+            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://dati.toscana.it/")
         if 'p_TN' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://dati.trentino.it")
-        if 'f_052' in dataset_dict.get('holder_identifier'):
+        if 'c_f052' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://dati.comune.matera.it")
         if 'c_f158' in dataset_dict.get('holder_identifier'):
@@ -802,9 +802,6 @@ class ItalianDCATAPProfile(RDFProfile):
             landing_page_uri = dataset_uri(dataset_dict)
         if 'm_bac' in dataset_dict.get('holder_identifier'):
             landing_page_uri = 'http://dati.san.beniculturali.it/dataset'
-        if 'uni_ba' in dataset_dict.get('holder_identifier'):
-            landing_page_uri = dataset_uri(dataset_dict)
-            landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://opendata.uniba.it")
         if 'M_ef' in dataset_dict.get('holder_identifier'):
             landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://sparql-noipa.mef.gov.it")
