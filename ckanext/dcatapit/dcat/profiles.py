@@ -881,6 +881,9 @@ class ItalianDCATAPProfile(RDFProfile):
             landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace(PREF_LANDING,"http://data.tdm-project.it")
             noaddsl=1
+        if 'AA1D3A2' in dataset_dict.get('holder_identifier'):
+            landing_page_uri = dataset_uri(dataset_dict)
+            noaddsl=1
         if 'PCM - Dipartimento della Protezione Civile' in dataset_dict.get('holder_name'):
             landing_page_uri = dataset_uri(dataset_dict)
             landing_page_uri=landing_page_uri.replace(PREF_LANDING,"https://github.com/pcm-dpc")
