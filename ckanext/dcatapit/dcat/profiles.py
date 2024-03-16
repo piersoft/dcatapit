@@ -149,8 +149,8 @@ class ItalianDCATAPProfile(RDFProfile):
         ):
             valueRef = self._object_value(dataset_ref, predicate)
             if valueRef:
-                if 'Dato' or 'disponibile' in valueRef:
-                   valueRef='UNKNOW'
+        #        if 'Dato' or 'disponibile' in valueRef:
+         #          valueRef='UNKNOW'
                 self._remove_from_extra(dataset_dict, key)
                 value = self._strip_uri(valueRef, base_uri)
                 dataset_dict[key] = value
