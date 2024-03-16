@@ -335,6 +335,7 @@ class ItalianDCATAPProfile(RDFProfile):
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A29_IODL20","https://www.dati.gov.it/content/italian-open-data-license-v20")
                 license=license.replace("https://w3id.org/italia/controlled-vocabulary/licences/A21_CCBY40","https://creativecommons.org/licenses/by/4.0/")
                 license=license.replace("http://www.opendefinition.org/licenses/cc-zero","https://w3id.org/italia/controlled-vocabulary/licences/A11_CCO10")
+                license=license.replace("https://creativecommons.org/publicdomain/zero/1.0/","https://w3id.org/italia/controlled-vocabulary/licences/A11_CCO10")
                 license=license.replace("C1_Unknown","A21_CCBY40")
                 license=license.replace("Licenza Sconosciuta","Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)")
                 license_uri = str(license)
