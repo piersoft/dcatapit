@@ -63,5 +63,6 @@ format_mapping = {
     'DOC': 'DOC',
     'xls': 'XLS',
     'RDF': 'RDF_XML',
+    'RDF_N_TRIPLES': 'RDF_XML',
     'ZIP': 'ZIP',  # requires to be more specific, can't infer
 }
